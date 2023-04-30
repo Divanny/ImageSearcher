@@ -1,37 +1,18 @@
 import React from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import './App.css';
+import HomePage from './HomePage';
+import ImagesPage from './ImagesPage';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 function App() {
   return (
-    <div>
-      <div className="glass-container">
-        <div className="glass-card">
-          <h1 className="title">Image Searcher</h1>
-          <h2 className="subtitle">Find the perfect <span className="transparent">image</span> for your project</h2>
-          <div className="search-container">
-            <input className="input" type="search" placeholder="Search..."/>
-            <button class="button">
-              <FontAwesomeIcon icon="fa-solid fa-magnifying-glass" class="icon"/>
-            </button>
-          </div>
-        </div>
-        <div className="area">
-            <ul className="circles">
-              <li></li>
-              <li></li>
-              <li></li>
-              <li></li>
-              <li></li>
-              <li></li>
-              <li></li>
-              <li></li>
-              <li></li>
-              <li></li>
-            </ul>
-        </div >
-      </div>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route index element={<HomePage />} />
+        <Route path="search" element={<ImagesPage />} />
+        {/* <Route path="*" element={<NoPage />} /> */}
+      </Routes>
+    </BrowserRouter>
+    
   );
 }
 

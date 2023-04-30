@@ -20,7 +20,7 @@ body {
   align-items: center;
   height: 100vh;
   background-color: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(8px);
   z-index: 999;
 }
 
@@ -33,8 +33,8 @@ body {
   padding: 3em;
   background: rgba( 255, 255, 255, 0.25 );
   box-shadow: 0 8px 32px 0 rgba(22, 22, 22, 0.37);
-  backdrop-filter: blur( 8px );
-  -webkit-backdrop-filter: blur( 8px );
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur( 10px );
   border-radius: 10px;
   border: 1px solid rgba( 255, 255, 255, 0.18 );
 }
@@ -47,7 +47,7 @@ body {
   margin: 0;
   margin-bottom: 10px;
   text-align: center;
-  text-shadow: 1px 1px #4c2d55;
+  text-shadow: 5px 2px #323232;
   letter-spacing: 2px;
 }
 
@@ -77,34 +77,40 @@ body {
   justify-content: center;
   align-items: center;
   width: 100%;
+  height: 20%;
 }
 
 .input {
-  background-color: rgba(255, 255, 255, 0.1);
-  border: 2px solid white;
+  --bg-color: #fff;
+  --main-color: #323232;
+  border: 2px solid var(--main-color);
+  background-color: var(--bg-color);
+  box-shadow: 4px 4px var(--main-color);
   border-radius: 30px;
-  color: white;
+  color: rgb(19, 19, 19);
   font-family: 'Poppins', sans-serif;
   font-size: 16px;
   height: 50px;
   padding: 0 20px;
   width: 100%;
   outline: none;
+  margin-right: 20px !important;
+  transition: all 0.2s;
 }
 .input::placeholder {
-  color: white;
+  color: rgb(20, 20, 20);
 }
 .input:focus {
-  outline-color: white;
-  color: white;
-  box-shadow: 5px 5px #888888;
+  box-shadow: 0px 0px var(--main-color);
+  transform: translate(3px, 3px);
  }
 
  .button {
   --bg-color: #fff;
   --main-color: #323232;
-  width: 40px;
-  height: 40px;
+  width: 55px;
+  height: 50px;
+  text-shadow: 5px 2px #4c2d55;
   border-radius: 100%;
   border: 2px solid var(--main-color);
   background-color: var(--bg-color);
@@ -115,6 +121,7 @@ body {
   align-items: center;
   transition: all 0.2s;
   cursor: pointer;
+  color: #323232;
 }
 
 .button:active {
@@ -253,4 +260,10 @@ body {
       border-radius: 50%;
   }
 
+}
+
+@media (max-width: 1250px) {
+  .glass-container {
+    width: 90%;
+  }
 }
