@@ -1,0 +1,210 @@
+/* ===== Scrollbar CSS ===== */
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #5d26c1 #ffffff;
+}
+
+/* Chrome, Edge and Safari */
+*::-webkit-scrollbar {
+  width: 7px;
+  width: 7px;
+}
+*::-webkit-scrollbar-thumb {
+  border-radius: 5px;
+  background-color: #5d26c1;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background-color: #a08bca;
+}
+
+*::-webkit-scrollbar-thumb:active {
+  background-color: #a08bca;
+}
+
+/* ===== Global CSS ===== */
+html {
+  background-color: rgb(247, 247, 247) !important;
+  height: 100% !important;
+  width: 100% !important;
+  font-family: "Poppins", sans-serif;
+}
+
+body {
+  background-color: rgb(247, 247, 247) !important;
+  height: 100% !important;
+  width: 100% !important;
+}
+
+#root {
+  height: 100% !important;
+  width: 100% !important;
+}
+
+.content {
+  background-color: rgb(241, 241, 241) !important;
+  height: 100% !important;
+  width: 100% !important;
+  overflow-y: scroll;
+}
+
+.headerContent {
+  border-radius: 20px;
+  padding: 20px;
+  margin: 1rem;
+  background: linear-gradient(45deg, #59c173, #a17fe0, #5d26c1);
+  background-size: 400% 400%;
+  animation: GradientBG 15s ease infinite;
+  background-color: rgb(247, 247, 247) !important;
+}
+
+.mainContent {
+  background-color: white;
+  margin: 1rem;
+  border-radius: 20px;
+  border: 20px white;
+  padding: 20px;
+  overflow-y: scroll;
+}
+
+.imagesPage .title {
+  font-family: "Pacifico", sans-serif;
+  font-size: 25px;
+  font-weight: bold;
+  color: white;
+  margin: 0;
+  margin-bottom: 10px;
+  text-align: center;
+  text-shadow: 3px 1px #323232;
+  letter-spacing: 2px;
+}
+
+.imagesPage .search-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 20%;
+}
+
+.imagesPage .input {
+  --bg-color: #fff;
+  --main-color: #323232;
+  border: 2px solid var(--main-color);
+  background-color: var(--bg-color);
+  box-shadow: 4px 4px var(--main-color);
+  border-radius: 30px;
+  color: rgb(19, 19, 19);
+  font-family: "Poppins", sans-serif;
+  font-size: 16px;
+  height: 35px;
+  padding: 0 20px;
+  outline: none;
+  margin-right: 20px !important;
+  transition: all 0.2s;
+}
+.imagesPage .input::placeholder {
+  color: rgb(20, 20, 20);
+}
+.imagesPage .input:focus {
+  box-shadow: 0px 0px var(--main-color);
+  transform: translate(3px, 3px);
+}
+
+.imagesPage .button {
+  --bg-color: #fff;
+  --main-color: #323232;
+  width: 40px;
+  height: 35px;
+  text-shadow: 5px 2px #4c2d55;
+  border-radius: 100%;
+  border: 2px solid var(--main-color);
+  background-color: var(--bg-color);
+  box-shadow: 4px 4px var(--main-color);
+  font-size: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.2s;
+  cursor: pointer;
+  color: #323232;
+}
+
+.imagesPage .button:active {
+  box-shadow: 0px 0px var(--main-color);
+  transform: translate(3px, 3px);
+}
+
+.numImages {
+  --bg-color: #fff;
+  --main-color: #323232;
+  border: 2px solid var(--main-color);
+  background-color: var(--bg-color);
+  box-shadow: 4px 4px var(--main-color);
+  border-radius: 30px;
+  color: rgb(19, 19, 19);
+  font-family: "Poppins", sans-serif;
+  margin-left: 10px;
+  transition: all 0.2s;
+}
+.numImages::placeholder {
+  color: rgb(20, 20, 20);
+}
+.numImages:focus {
+  box-shadow: 0px 0px var(--main-color);
+  transform: translate(3px, 3px);
+}
+
+.resultsFor {
+  font-family: "Poppins";
+  text-shadow: 1px 1px rgb(219, 219, 219);
+  border: 2px rgb(219, 219, 219);
+  color: #323232;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.searchTitle {
+  font-family: "Pacifico", sans-serif;
+  font-size: 40px;
+  font-weight: bold;
+  color: #323232;
+  margin: 0;
+  margin-bottom: 10px;
+  text-align: center;
+  text-shadow: 5px 2px white;
+  letter-spacing: 2px;
+}
+
+.my-masonry-grid {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  margin-left: -30px;
+  width: auto;
+}
+.my-masonry-grid_column {
+  padding-left: 30px;
+  background-clip: padding-box;
+}
+
+/* Estilos para pantallas más pequeñas */
+@media (max-width: 768px) {
+  .headerContent {
+    text-align: center;
+    padding: 20px;
+  }
+  .title-container {
+    margin-bottom: 10px;
+    width: 100%;
+  }
+  .searchbox-container {
+    display: block;
+    width: 100%;
+  }
+  .input {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+}

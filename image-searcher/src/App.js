@@ -7,7 +7,8 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route index element={<HomePage />} />
+        <Route path="" element={<HomePage />} />
+        <Route path="search/:searchTerm" element={<ImagesPage />} />
         <Route path="search" element={<ImagesPage />} />
         {/* <Route path="*" element={<NoPage />} /> */}
       </Routes>
