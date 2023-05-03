@@ -130,7 +130,7 @@ body {
   color: #323232;
 }
 
-.button:active {
+.button:active, .pressed {
   box-shadow: 0px 0px var(--main-color);
   transform: translate(3px, 3px);
 }

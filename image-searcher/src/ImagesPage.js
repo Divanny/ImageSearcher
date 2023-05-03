@@ -1,4 +1,4 @@
-import { React, useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./assets/styles/ImagesPage.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
@@ -6,15 +6,21 @@ import CardGrid from "./components/MasonryLayout";
 import ImageCard from "./components/ImageCard";
 import { useParams } from "react-router-dom";
 import axios from 'axios';
+import { act } from "react-dom/test-utils";
 
 export default function ImagesPage() {
   const { searchTerm: initialSearchTerm } = useParams();
   const [searchTerm, setSearchTerm] = useState(initialSearchTerm || '');
   const [searchInput, setSearchInput] = useState(searchTerm);
   const [images, setImages] = useState([]);
+  const [totalPages, setTotalPages] = useState(0);
+  const [totalImages, setTotalImages] = useState(0);
+  const [actualPage, setActualPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [numImages, setNumImages] = useState(30);
+  const [isPressed, setIsPressed] = useState(false);
+  const buttonRef = useRef(null);
 
   function truncateString(str, num) {
     if (str != null){
@@ -26,12 +32,15 @@ export default function ImagesPage() {
     }
   }
 
-  async function fetchImages(searchTerm, numImages) {
+  async function fetchImages(searchTerm, numImages, actualPage) {
     setSearchTerm(searchTerm);
     setIsLoading(true);
     try {
-      const response = await axios.get(`https://api.unsplash.com/search/photos?query=${searchTerm}&per_page=${numImages}&client_id=${process.env.REACT_APP_ACCESS_KEY}`);
+      const response = await axios.get(`https://api.unsplash.com/search/photos?query=${searchTerm}&page=${actualPage}&per_page=${numImages}&client_id=${process.env.REACT_APP_ACCESS_KEY}`);
       setImages(response.data.results);
+      setTotalPages(response.total_pages);
+      setTotalImages(response.total);
+      console.log(response.data);
     } catch (error) {
       setError(error);
     }
@@ -42,9 +51,34 @@ export default function ImagesPage() {
     if (initialSearchTerm) {
       setSearchTerm(initialSearchTerm);
     }
-    fetchImages(searchTerm, numImages);
-  }, [initialSearchTerm, searchTerm, numImages]);
+    fetchImages(searchTerm, numImages, actualPage);
+  }, [ initialSearchTerm, searchTerm, actualPage, numImages ]);
   
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        setIsPressed(true);
+      }
+    };
+
+    const handleKeyUp = (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        setIsPressed(false);
+        buttonRef.current.click();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    document.addEventListener("keyup", handleKeyUp);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      document.removeEventListener("keyup", handleKeyUp);
+    };
+  }, []);
+
   return (
     <div className="content imagesPage">
       <header className="headerContent">
@@ -60,7 +94,7 @@ export default function ImagesPage() {
               placeholder="Search..."
               onChange={(event) => setSearchInput(event.target.value)}
             />            
-            <button className="button" onClick={() => fetchImages(searchInput)}>
+            <button className={`button ${isPressed ? "pressed" : ""}`} ref={buttonRef} onClick={() => fetchImages(searchInput)}>
               <FontAwesomeIcon icon={faMagnifyingGlass} />
             </button>
           </div>
@@ -88,7 +122,7 @@ export default function ImagesPage() {
           {!isLoading && <CardGrid>
               {images.map((image) => (
                 <ImageCard
-                  title={image.description}
+                  title={truncateString(image.description, 55)}
                   authorName={image.user.username}
                   avatarUrl={image.user.profile_image.large}
                   imageUrl={image.urls.small}

@@ -17,10 +17,26 @@
   transform: translate(3px, 3px);
 }
 
-.card img {
+.card .image-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  }
+  
+.card .image-container img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  -webkit-filter: grayscale(0) blur(0);
+	filter: grayscale(0) blur(0);
+	-webkit-transition: .3s ease-in-out;
+	transition: .3s ease-in-out;
+}
+
+.card .image-container:hover img {
+  -webkit-filter: grayscale(100%) blur(2px);
+	filter: grayscale(100%) blur(2px);
 }
 
 .card-details {
@@ -49,4 +65,29 @@
   height: 35px;
   border-radius: 50%;
   margin-right: 8px;
+}
+
+.card .downloadButton {
+  --main-color: #323232;
+  padding: 5px;
+  border-radius: 10px;
+  border: 2px solid var(--main-color);
+  font-size: 18px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.2s;
+  cursor: pointer;
+  color: #323232;
+  position: absolute;
+  z-index: 999;
+  right: 10px;
+  top: 10px;
+  opacity: 0;
+  pointer-events: none;
+}
+  
+.card .image-container:hover .downloadButton {
+  opacity: 1;
+  pointer-events: auto;
 }

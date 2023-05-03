@@ -15,8 +15,15 @@
   background-color: #5d26c1;
 }
 
+*::-webkit-scrollbar-track
+{
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+	border-radius: 10px;
+	background-color: #F5F5F5;
+}
+
 *::-webkit-scrollbar-thumb:hover {
-  background-color: #a08bca;
+  background-color: #6d3dc5;
 }
 
 *::-webkit-scrollbar-thumb:active {
@@ -65,7 +72,6 @@ body {
   border-radius: 20px;
   border: 20px white;
   padding: 20px;
-  overflow-y: scroll;
 }
 
 .imagesPage .title {
