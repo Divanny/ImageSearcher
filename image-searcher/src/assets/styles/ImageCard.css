@@ -91,3 +91,8 @@
   opacity: 1;
   pointer-events: auto;
 }
+
+.authorLink{
+  color: #323232 !important;
+  text-decoration: none;
+}

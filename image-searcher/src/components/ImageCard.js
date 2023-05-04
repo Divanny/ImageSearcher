@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDownload } from "@fortawesome/free-solid-svg-icons";
 import "../assets/styles/ImageCard.css";
 
-const ImageCard = ({ title, authorName, avatarUrl, imageUrl, dimensions }) => {
+const ImageCard = ({ title, authorName, avatarUrl, authorProfile, imageUrl, dimensions }) => {
   const download = () => {
     fetch(imageUrl)
       .then((response) => response.blob())
@@ -30,8 +30,10 @@ const ImageCard = ({ title, authorName, avatarUrl, imageUrl, dimensions }) => {
         <h3>{title}</h3>
         <div className="d-flex justify-content-between">
           <div className="d-flex author">
-            <img src={avatarUrl} alt={authorName} />
-            <span>{authorName}</span>
+            <a class="authorLink" rel="noreferrer" target="_blank" href={authorProfile}>
+              <img src={avatarUrl} alt={authorName} />
+              <span>{authorName}</span>
+            </a>
           </div>
           <div className="dimensions">
             <span>{dimensions}</span>

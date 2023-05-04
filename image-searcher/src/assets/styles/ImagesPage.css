@@ -195,6 +195,47 @@ body {
   background-clip: padding-box;
 }
 
+.contentFooter {
+  width: 100%;
+}
+
+.paginationButton {
+  --bg-color: #fff;
+  --main-color: #323232;
+  border: 2px solid var(--main-color);
+  background-color: var(--bg-color);
+  box-shadow: 4px 4px var(--main-color);
+  border-radius: 30px;
+  color: #323232;
+  font-family: "Poppins", sans-serif;
+  transition: all 0.2s;
+  padding: 4px 10px;
+}
+.paginationButton::placeholder {
+  color: rgb(20, 20, 20);
+}
+.paginationButton:active {
+  box-shadow: 0px 0px var(--main-color);
+  transform: translate(3px, 3px);
+}
+
+.actualPage {
+  --bg-color: #fff;
+  --main-color: #323232;
+  border: 2px solid var(--main-color);
+  background-color: var(--bg-color);
+  box-shadow: 4px 4px var(--main-color);
+  border-radius: 30px;
+  color: #323232;
+  font-family: "Poppins", sans-serif;
+  transition: all 0.2s;
+  padding: 4px 14px;
+}
+
+.Toastify__toast-body {
+  font-family: "Poppins", sans-serif !important;
+}
+
 /* Estilos para pantallas más pequeñas */
 @media (max-width: 768px) {
   .headerContent {
@@ -212,5 +253,8 @@ body {
   .input {
     width: 100%;
     margin-bottom: 10px;
+  }
+  .orientationContainer {
+    display: none;
   }
 }

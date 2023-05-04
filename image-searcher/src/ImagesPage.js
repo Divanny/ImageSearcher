@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useParams } from "react-router-dom";
 import "./assets/styles/ImagesPage.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import CardGrid from "./components/MasonryLayout";
 import ImageCard from "./components/ImageCard";
-import { useParams } from "react-router-dom";
 import axios from 'axios';
-import { act } from "react-dom/test-utils";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMagnifyingGlass, faChevronLeft, faChevronRight } from "@fortawesome/free-solid-svg-icons";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function ImagesPage() {
   const { searchTerm: initialSearchTerm } = useParams();
@@ -19,6 +20,7 @@ export default function ImagesPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [numImages, setNumImages] = useState(30);
+  const [orientation, setOrientation] = useState('All');
   const [isPressed, setIsPressed] = useState(false);
   const buttonRef = useRef(null);
 
@@ -32,27 +34,33 @@ export default function ImagesPage() {
     }
   }
 
-  async function fetchImages(searchTerm, numImages, actualPage) {
+  const handlePage = (page) => {
+    setActualPage(page);
+    fetchImages(searchTerm, numImages, page)
+  }
+
+  async function fetchImages(searchTerm, numImages, actualPage, orientation) {
     setSearchTerm(searchTerm);
     setIsLoading(true);
     try {
-      const response = await axios.get(`https://api.unsplash.com/search/photos?query=${searchTerm}&page=${actualPage}&per_page=${numImages}&client_id=${process.env.REACT_APP_ACCESS_KEY}`);
+      const response = await axios.get(`https://api.unsplash.com/search/photos?query=${searchTerm}&page=${actualPage}&per_page=${numImages}${orientation !== 'All' ? '&orientation='+ orientation : ''}&client_id=${process.env.REACT_APP_ACCESS_KEY}`);
       setImages(response.data.results);
-      setTotalPages(response.total_pages);
-      setTotalImages(response.total);
-      console.log(response.data);
+      setTotalPages(response.data.total_pages);
+      setTotalImages(response.data.total);
     } catch (error) {
       setError(error);
+      toast.warn('Free request limit reached. Visit "Divanny" on GitHub to support this project and get more requests. Thank you!');
     }
     setIsLoading(false);
   }
+  
 
   useEffect(() => {
     if (initialSearchTerm) {
       setSearchTerm(initialSearchTerm);
     }
-    fetchImages(searchTerm, numImages, actualPage);
-  }, [ initialSearchTerm, searchTerm, actualPage, numImages ]);
+    fetchImages(searchTerm, numImages, actualPage, orientation);
+  }, [ initialSearchTerm, searchTerm, actualPage, numImages, orientation ]);
   
   useEffect(() => {
     const handleKeyDown = (event) => {
@@ -94,37 +102,52 @@ export default function ImagesPage() {
               placeholder="Search..."
               onChange={(event) => setSearchInput(event.target.value)}
             />            
-            <button className={`button ${isPressed ? "pressed" : ""}`} ref={buttonRef} onClick={() => fetchImages(searchInput)}>
+            <button className={`button ${isPressed ? "pressed" : ""}`} ref={buttonRef} onClick={() => {
+              setActualPage(1);
+              fetchImages(searchInput);
+            }}>
               <FontAwesomeIcon icon={faMagnifyingGlass} />
             </button>
           </div>
         </div>
       </header>
       <main className="mainContent">
-        <div className="contentDescrition d-flex justify-content-between mb-4">
+        <div className="contentDescrition d-flex justify-content-between mb-4 flex-wrap">
           <div className="f">
-            <p className="resultsFor">Showing {images.length} results for...</p>
+            <p className="resultsFor">Showing {totalImages} results for...</p>
             <h3 className="searchTitle">{truncateString(searchTerm, 30)}</h3>
           </div>
-          <div className="filters">
-            <label htmlFor="numImagesSelect" className="resultsFor">Show:</label>
-            <select id="numImagesSelect" className="numImages" value={numImages} onChange={(event) => setNumImages(event.target.value)}>
-              <option value={10}>10</option>
-              <option value={20}>20</option>
-              <option value={30}>30</option>
-            </select>
+          <div className="filters d-flex justify-content-end flex-wrap">
+            <div className="filterItem mx-4 orientationContainer">
+              <label htmlFor="orientationSelect" className="resultsFor">Orientation:</label>
+              <select id="orientationSelect" className="numImages" value={orientation} onChange={(event) => setOrientation(event.target.value)}>
+                <option selected value={"All"}>All</option>
+                <option value={"landscape"}>Landscape</option>
+                <option value={"portrait"}>Portrait</option>
+                <option value={"squarish"}>Squarish</option>
+              </select>
+            </div>
+            <div className="filterItem mx-4">
+              <label htmlFor="numImagesSelect" className="resultsFor">Show:</label>
+              <select id="numImagesSelect" className="numImages" value={numImages} onChange={(event) => setNumImages(event.target.value)}>
+                <option value={10}>10</option>
+                <option value={20}>20</option>
+                <option value={30}>30</option>
+              </select>
+            </div>
           </div>
         </div>
         <div>
           <div className="images-container">
           {isLoading && <div>Loading...</div>}
-          {error && <div>Error: {error}</div>}
+          {error && <div>Error on loading</div>}
           {!isLoading && <CardGrid>
               {images.map((image) => (
                 <ImageCard
                   title={truncateString(image.description, 55)}
-                  authorName={image.user.username}
-                  avatarUrl={image.user.profile_image.large}
+                  authorName={truncateString(image.user.username, 13)}
+                  avatarUrl={image.user.profile_image.small}
+                  authorProfile={image.user.portfolio_url}
                   imageUrl={image.urls.small}
                   dimensions={image.width + "x" + image.height}
                 />
@@ -132,8 +155,32 @@ export default function ImagesPage() {
             </CardGrid>}
           </div>
         </div>
+        <div className="contentFooter">
+          <div className="paginationContainer d-flex justify-content-end">
+            <button className="paginationButton mx-2" onClick={() => handlePage(actualPage - 1)} disabled={actualPage === 1}>
+              <FontAwesomeIcon icon={faChevronLeft} />
+            </button>
+            <span className="actualPage">{actualPage}</span> 
+            <button className="paginationButton mx-2" onClick={() => handlePage(actualPage + 1)} disabled={actualPage === totalPages}>
+              <FontAwesomeIcon icon={faChevronRight} />
+            </button>
+          </div>
+        </div>
       </main>
       <footer></footer>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+      />
+
     </div>
   );
 }
