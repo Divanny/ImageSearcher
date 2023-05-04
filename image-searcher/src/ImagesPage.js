@@ -6,7 +6,6 @@ import CardGrid from "./components/MasonryLayout";
 import ImageCard from "./components/ImageCard";
 import { useParams } from "react-router-dom";
 import axios from 'axios';
-import { act } from "react-dom/test-utils";
 
 export default function ImagesPage() {
   const { searchTerm: initialSearchTerm } = useParams();
@@ -30,6 +29,10 @@ export default function ImagesPage() {
         return str.slice(0, num) + "...";
       }
     }
+  }
+
+  function handleActualPage(newPage) {
+    setActualPage(newPage);
   }
 
   async function fetchImages(searchTerm, numImages, actualPage) {
