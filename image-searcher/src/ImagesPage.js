@@ -18,7 +18,6 @@ export default function ImagesPage() {
   const [totalImages, setTotalImages] = useState(0);
   const [actualPage, setActualPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
   const [numImages, setNumImages] = useState(30);
   const [orientation, setOrientation] = useState('All');
   const [isPressed, setIsPressed] = useState(false);
@@ -43,13 +42,18 @@ export default function ImagesPage() {
     setSearchTerm(searchTerm);
     setIsLoading(true);
     try {
-      const response = await axios.get(`https://api.unsplash.com/search/photos?query=${searchTerm}&page=${actualPage}&per_page=${numImages}${orientation !== 'All' ? '&orientation='+ orientation : ''}&client_id=${process.env.REACT_APP_ACCESS_KEY}`);
+      const request = `https://api.unsplash.com/search/photos?query=${searchTerm}&page=${actualPage}&per_page=${numImages}${orientation !== 'All' ? '&orientation='+ orientation : ''}&client_id=${process.env.REACT_APP_ACCESS_KEY}`;
+      const response = await axios.get(request);
       setImages(response.data.results);
       setTotalPages(response.data.total_pages);
       setTotalImages(response.data.total);
     } catch (error) {
-      setError(error);
-      toast.warn('Free request limit reached. Visit "Divanny" on GitHub to support this project and get more requests. Thank you!');
+      if (error.response.status === 403){
+        toast.warn('Free request limit reached. Visit "Divanny" on GitHub to support this project and get more requests. Thank you!');
+      }
+      else {
+        toast.error(error.message);
+      }
     }
     setIsLoading(false);
   }
@@ -140,7 +144,6 @@ export default function ImagesPage() {
         <div>
           <div className="images-container">
           {isLoading && <div>Loading...</div>}
-          {error && <div>Error on loading</div>}
           {!isLoading && <CardGrid>
               {images.map((image) => (
                 <ImageCard
