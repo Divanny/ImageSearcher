@@ -19,8 +19,9 @@ export default function ImagesPage() {
   const [actualPage, setActualPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [numImages, setNumImages] = useState(30);
-  const [orientation, setOrientation] = useState('All');
+  const [orientation, setOrientation] = useState(null);
   const [isPressed, setIsPressed] = useState(false);
+  const [selectedColor, setSelectedColor] = useState(null);
   const buttonRef = useRef(null);
 
   function truncateString(str, num) {
@@ -38,18 +39,26 @@ export default function ImagesPage() {
     fetchImages(searchTerm, numImages, page)
   }
 
-  async function fetchImages(searchTerm, numImages, actualPage, orientation) {
+  async function fetchImages(searchTerm, numImages, actualPage, orientation, color) {
     setSearchTerm(searchTerm);
     setIsLoading(true);
     try {
-      const request = `https://api.unsplash.com/search/photos?query=${searchTerm}&page=${actualPage}&per_page=${numImages}${orientation !== 'All' ? '&orientation='+ orientation : ''}&client_id=${process.env.REACT_APP_ACCESS_KEY}`;
-      const response = await axios.get(request);
+      let request = `https://api.unsplash.com/search/photos?query=${searchTerm}&page=${actualPage}&per_page=${numImages}`;
+      if (orientation) {
+        request += `&orientation=${orientation}`;
+      }
+      if (color) {
+        request += `&color=${color}`;
+      }
+      request += `&client_id=${process.env.REACT_APP_ACCESS_KEY}`;
+      const response = await axios.get(request);      
+      console.log(response.data.results[0]);
       setImages(response.data.results);
       setTotalPages(response.data.total_pages);
       setTotalImages(response.data.total);
     } catch (error) {
       if (error.response.status === 403){
-        toast.warn('Free request limit reached. Visit "Divanny" on GitHub to support this project and get more requests. Thank you!');
+        toast.warn(`Free request limit reached. Please try again in 1 hour. Visit "Divanny" on GitHub to support this project and get more requests. Thank you!`);
       }
       else {
         toast.error(error.message);
@@ -63,8 +72,8 @@ export default function ImagesPage() {
     if (initialSearchTerm) {
       setSearchTerm(initialSearchTerm);
     }
-    fetchImages(searchTerm, numImages, actualPage, orientation);
-  }, [ initialSearchTerm, searchTerm, actualPage, numImages, orientation ]);
+    fetchImages(searchTerm, numImages, actualPage, orientation, selectedColor);
+  }, [ initialSearchTerm, searchTerm, actualPage, numImages, orientation, selectedColor ]);
   
   useEffect(() => {
     const handleKeyDown = (event) => {
@@ -122,10 +131,27 @@ export default function ImagesPage() {
             <h3 className="searchTitle">{truncateString(searchTerm, 30)}</h3>
           </div>
           <div className="filters d-flex justify-content-end flex-wrap">
+          <div className="filterItem mx-4 orientationContainer">
+              <label htmlFor="colorSelect" className="resultsFor">Color:</label>
+              <select id="colorSelect" className="numImages" value={selectedColor} onChange={(event) => setSelectedColor(event.target.value)}>
+                <option value={""}>Any</option>
+                <option value={"black_and_white"}>Black & White</option>
+                <option value={"black"}>Black</option>
+                <option value={"white"}>White</option>
+                <option value={"yellow"}>Yellow</option>
+                <option value={"orange"}>Orange</option>
+                <option value={"red"}>Red</option>
+                <option value={"purple"}>Purple</option>
+                <option value={"magenta"}>Magenta</option>
+                <option value={"green"}>Green</option>
+                <option value={"teal"}>Teal</option>
+                <option value={"blue"}>Blue</option>
+              </select>
+            </div>
             <div className="filterItem mx-4 orientationContainer">
               <label htmlFor="orientationSelect" className="resultsFor">Orientation:</label>
               <select id="orientationSelect" className="numImages" value={orientation} onChange={(event) => setOrientation(event.target.value)}>
-                <option selected value={"All"}>All</option>
+                <option value={""}>Any</option>
                 <option value={"landscape"}>Landscape</option>
                 <option value={"portrait"}>Portrait</option>
                 <option value={"squarish"}>Squarish</option>
@@ -148,11 +174,13 @@ export default function ImagesPage() {
               {images.map((image) => (
                 <ImageCard
                   title={truncateString(image.description, 55)}
+                  description={image.alt_description}
                   authorName={truncateString(image.user.username, 13)}
                   avatarUrl={image.user.profile_image.small}
-                  authorProfile={image.user.portfolio_url}
+                  authorProfile={image.user.portfolio_url ?? image.user.links.html}
                   imageUrl={image.urls.small}
                   dimensions={image.width + "x" + image.height}
+                  imageUrlDownload={image.urls.full}
                 />
               ))}
             </CardGrid>}
